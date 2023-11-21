@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #stars-section {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: black;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .star-white {
+      fill: url(#star-gradient);
+    }
+
+    .star-pulse {
+      fill: url(#star-gradient);
+      animation: pulse 5s infinite;
+    }
+
+    .northern-lights {
+      fill: url(#northern-lights-gradient);
+      animation: moveNorthernLights 20s linear infinite; /* Adjust the duration as needed */
+    }
+
+    @keyframes pulse {
+      0% {
+        r: 0.1;
+        opacity: 0.8;
+      }
+      50% {
+        r: 0.2;
+        opacity: 1;
+      }
+      100% {
+        r: 0.1;
+        opacity: 0.8;
+      }
+    }
+
+    @keyframes moveNorthernLights {
+      0% {
+        offset1: 0%;
+        offset2: 25%;
+        offset3: 50%;
+        offset4: 75%;
+        offset5: 100%;
+      }
+      100% {
+        offset1: 100%;
+        offset2: 125%;
+        offset3: 150%;
+        offset4: 175%;
+        offset5: 200%;
+      }
+    }
+
+    /* Animation for changing color every 2 seconds */
+    @keyframes changeColor {
+      0% {
+        stop-color: purple;
+      }
+      33% {
+        stop-color: royalblue;
+      }
+      66% {
+        stop-color: green;
+      }
+      100% {
+        stop-color: purple;
+      }
+    }
+
+    /* Animation for changing color every 2 seconds */
+    @keyframes changeColorC {
+      0% {
+        stop-color: #1a1a1a;
+      }
+      33% {
+        stop-color: #006699;
+      }
+      66% {
+        stop-color: #006699;
+      }
+      100% {
+        stop-color: #000000;
+      }
+    }
+
+    /* Apply the animation to the specified stop */
+     #northern-lights-gradient stop:nth-child(2) {
+      animation: changeColorC 10s infinite; /* Adjust the duration as needed (3 color changes x 2 seconds each) */
+    }
+    #northern-lights-gradient stop:nth-child(4) {
+      animation: changeColor 10s infinite; /* Adjust the duration as needed (3 color changes x 2 seconds each) */
+    }
+  </style>
+</head>
+<body>
+
+  <section id="stars-section">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+        <!-- Define gradient for star glow -->
+        <radialGradient id="star-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+          <stop offset="0%" style="stop-color:#fff; stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#fff; stop-opacity:0" />
+        </radialGradient>
+        <!-- Define gradient for nebula glow -->
+        <conicGradient id="nebula-gradient" gradientUnits="userSpaceOnUse" cx="50" cy="50" r="30" spreadMethod="reflect">
+          <stop offset="0%" style="stop-color: purple; stop-opacity: 0" />
+          <stop offset="50%" style="stop-color: #003366; stop-opacity: 0.5" />
+          <stop offset="100%" style="stop-color: purple; stop-opacity: 0" />
+        </conicGradient>
+        <!-- Define gradient for northern lights -->
+        <linearGradient id="northern-lights-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color: #000000; stop-opacity: 0.3" />
+          <stop offset="20%" style="stop-color: #006699; stop-opacity: 0.6" />
+          <stop offset="40%" style="stop-color: #1a1a1a; stop-opacity: 0.4" />
+          <!-- the below stop should change color every 2 seconds -->
+          <stop offset="60%" style="stop-color: purple; stop-opacity: 0.6" />
+          <!-- the top stop should change color every 2 seconds -->
+          <stop offset="80%" style="stop-color: #003366; stop-opacity: 0.3" />
+          <stop offset="100%" style="stop-color: #003366; stop-opacity: 0.3" />
+        </linearGradient>
+      </defs>
+      <!-- Northern Lights background -->
+      <rect class="northern-lights" width="100%" height="100%" />
+      <!-- Dynamically generated stars -->
+      <script>
+        const svg = document.querySelector('svg');
+        const pulseProbability = 0.5; // Adjust this value to control the proportion of pulsating stars
+        const whiteStarSize = 0.05; // Adjust this value to control the size of white stars
+
+        for (let i = 0; i < 1500; i++) {
+          const x = Math.random() * 100;
+          const y = Math.random() * 100;
+          const size = Math.random() * 0.3 + 0.1;
+          const opacityDuration = Math.random() * 3 + 1;
+          const isPulsating = Math.random() < pulseProbability;
+
+          const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          star.setAttribute('class', isPulsating ? 'star-pulse' : 'star-white');
+          star.setAttribute('cx', x);
+          star.setAttribute('cy', y);
+          star.setAttribute('r', isPulsating ? size : whiteStarSize);
+          star.innerHTML = isPulsating ? '' : `
+            <animate attributeName="opacity" dur="${opacityDuration}s" repeatCount="indefinite" values="0;1;0" keyTimes="0;0.5;1" />
+          `;
+          
+          svg.appendChild(star);
+        }
+      </script>
+    </svg>
+  </section>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
